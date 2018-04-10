@@ -1,0 +1,284 @@
+{
+    "Solution" : {
+        "Id" : "walksregister"
+    },
+    "Tiers" : {
+        "web" : {
+            "Components" :{
+                "docs" : {
+                    "SPA" : {
+                        "Instances" : {
+                            "default" : {
+                                "Versions" : {
+                                    "v1" : {
+                                        "DeploymentUnits" : ["docs-v1"]
+                                    }
+                                }
+                            }
+                        },
+                        "WAF" : {
+                            "IPAddressGroups" : ["global"]
+                        },
+                        "Certificate" : {
+                        },
+                        "CloudFront" : {
+                            "ErrorPage" : "/403.html",
+                            "DeniedPage" : "/403.html",
+                            "NotFoundPage" : "/404.html",
+                            "CachingTTL" : { 
+                                "Default" : 30
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api" : {
+            "Components" : {
+                "walks" : {
+                    "APIGateway" : {
+                        "Links" : {
+                            "imp" : {
+                                "Tier" : "api",
+                                "Component" : "walks-lambda"
+                            }
+                        },
+                        "Instances" : {
+                            "default" : {
+                                "Versions" : {
+                                    "v1" : {
+                                        "DeploymentUnits" : ["walks-v1"]
+                                    }
+                                }
+                            },
+                            "mock" : {
+                                "Versions" : {
+                                    "v1" : {
+                                        "DeploymentUnits" : ["walks-mock-v1"]
+                                    }
+                                }
+                            }
+                        },
+                        "Certificate" : {
+                            "IncludeInHost" : {
+                                "Version" : false
+                            }
+                        },
+                        "CloudFront" : {
+                        },
+                        "Publish" : {
+                            "IPAddressGroups" : ["global"]
+                        },
+                        "WAF" : {
+                            "IPAddressGroups" : ["global"]
+                        }
+                    }
+                }
+            }
+        },
+        "app" : {
+            "Components" : {
+                "stream-s3" : {
+                    "S3" : {
+                        "Instances" : {
+                            "default" : {
+                                "Versions" : {
+                                    "v1" : {
+                                        "DeploymentUnits" : ["stream-v1-s3"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "stream-sqs" : {
+                    "SQS" : {
+                        "Instances" : {
+                            "default" : {
+                                "Versions" : {
+                                    "v1" : {
+                                        "DeploymentUnits" : ["stream-v1-sqs"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "walks-lambda" : {
+                    "Lambda" : {
+                        "RunTime" : "nodejs6.10",
+                        "MemorySize" : 512,
+                        "Timeout" : 60,
+                        "Functions" : {
+                            "adminapi" : {
+                                "Handler" : "index.handler",
+                                "Schedules" : {
+                                    "keepalive" : {
+                                        "Enabled" : true,
+                                        "Expression" : "rate(30 minutes)",
+                                        "InputPath" : "/healthcheck"
+                                    }
+                                }
+                            }
+                        },
+                        "Instances" : {
+                            "default" : {
+                                "Versions" : {
+                                    "v1" : {
+                                        "DeploymentUnits" : ["walks-v1-imp"]
+                                    }
+                                }
+                            }
+                        },
+                        "Links" : {
+                            "api" : {
+                                "Tier" : "api",
+                                "Component" : "walks",
+                                "Direction" : "inbound"
+                            },
+                            "database" : {
+                                "Tier" : "db",
+                                "Component" : "api",
+                                "Version" : ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "db" : { 
+            "Components" : {
+                "walks" : {
+                    "DeploymentUnits" : ["walks-db"],
+                    "RDS" : {
+                        "Engine" : "mysql",
+                        "EngineVersion" : "5.7",
+                        "Size" : 5,
+                        "Port" : "mysql",
+                        "Encrypted" : true,
+                        "Backup" : {
+                            "RetentionPeriod" : 35,
+                            "SnapshotOnDeploy" : true
+                        }
+                    },
+                    "MultiAZ" : false
+                },
+                "filestore" : { 
+                    "Title" : "General File store",
+                    "DeploymentUnits" : ["filestore"],
+                    "EFS" : {}
+                },
+                "searchcluster" : {
+                    "Title" : "Search services",
+                    "DeploymentUnits" : ["searchcluster"],
+                    "ES" : {
+                    }
+                }
+            }
+        },
+        "docs" :{
+            "Components" : {
+                "docshub" : {
+                    "DeploymentUnits" : [ "docshub" ],
+                    "contenthub" : {
+                        "Engine" : "github",
+                        "Repository" : "codeontap/gen3-testsuite-code.git",
+                        "Prefix" : "/app/" 
+                    }
+                },
+                "docsnode" : { 
+                    "DeploymentUnits" : [ "docsnode"],
+                    "contentnode" : {
+                        "Links" : {
+                            "docshub" : {
+                                "Tier" : "docs",
+                                "Component" : "docshub"
+                            }
+                        },
+                        "Path" : {
+                            "IncludeInPath" : {
+                                "Product" : true,
+                                "Segment" : false,
+                                "Solution" : true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "mgmt" : {
+            "Components" : {
+                "alm-ecs" : {
+                    "Title" : "Application life cycle management tasks",
+                    "DeploymentUnits" : ["alm-ecs"],
+                    "Role" : "ECS",
+                    "ECS" : {
+                        "ClusterWideStorage" : true,
+                        "Services" : {
+                            "almmaster" : {
+                                "Instances" : {
+                                    "default" : {
+                                        "Versions" : {
+                                            "v1" : {
+                                                "DeploymentUnits" : ["almmaster-v1-imp"]
+                                            }
+                                        }
+                                    }
+                                },
+                                "Containers" : {
+                                    "almmaster" : {
+                                        "Cpu" : 256,
+                                        "Memory" : 1024,
+                                        "Ports" : { 
+                                            "https" : {
+                                                "LB" : {
+                                                    "Tier" : "ilb",
+                                                    "Component" : "almmaster",
+                                                    "Priority" : 100,
+                                                    "Port" : 8080
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }           
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "Processors" : {
+        "default" : {
+            "ECS" : {
+                "Processor" : "t2.medium"
+            }
+        }
+    },
+    "Storage" : { 
+        "default" : {
+            "ECS" : {
+                "Persistent" : true
+            },
+            "ElasticSearch": {
+                "Volumes": {
+                  "codeontap": {
+                    "Device": "/dev/sdp",
+                    "Size": "30"
+                  }
+                }
+              }
+        }
+    },
+    "Ports" :  {
+        "http" : {
+            "HealthCheck" : {
+                "Path" : "/v1/healthcheck/",
+                "Interval" : "30",
+                "Timeout" : "29",
+                "HealthyThreshold" : "2",
+                "UnhealthyThreshold" : "10"
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "Domains" : {
+        "walksregister" : {
+            "Stem": "walksregister.codeontap.io"
+        }
+    },
+    "Certificates" : {
+        "walksregister" : {
+            "Domain" : "walksregister"
+        }
+    }
+}

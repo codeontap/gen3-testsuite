@@ -1,0 +1,8 @@
+{
+    "Product" : {
+        "Title" : "Walks Register",
+        "Name" : "walksregister",
+        "Id" : "register",
+        "Domain" : "walksregister"
+    }
+}

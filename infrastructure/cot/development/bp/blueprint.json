@@ -1,0 +1,362 @@
+{
+  "Tenants": [
+    {
+      "Id": "msw",
+      "Configuration": {
+        "CertificateBehaviours": {
+          "External": true,
+          "Id": "CertificateBehaviours",
+          "Name": "CertificateBehaviours"
+        },
+        "Id": "msw",
+        "Title": "Ministry of Silly Walks",
+        "Name": "msw"
+      },
+      "Domains": {
+        "walksregister": {
+          "Stem": "walksregister.codeontap.io",
+          "Id": "walksregister",
+          "Name": "walksregister"
+        },
+        "Id": "Domains",
+        "Name": "Domains"
+      },
+      "Products": [
+        {
+          "Id": "register",
+          "Configuration": {
+            "Domain": "walksregister",
+            "Id": "register",
+            "Name": "walksregister",
+            "Region": "ap-southeast-2",
+            "SES": {
+              "Region": "us-west-2",
+              "Id": "SES",
+              "Name": "SES"
+            },
+            "Title": "Walks Register"
+          },
+          "Environments": [
+            {
+              "Id": "dev",
+              "Configuration": {
+                "Category": "dev",
+                "Description": "Potentially holds individual dev servers for multiple devs",
+                "DomainBehaviours": {
+                  "Segment": "segmentInHost",
+                  "Id": "DomainBehaviours",
+                  "Name": "DomainBehaviours"
+                },
+                "Name": "development",
+                "Operations": {
+                  "Expiration": 14,
+                  "Id": "Operations",
+                  "Name": "Operations"
+                },
+                "Title": "Development Environment",
+                "Id": "dev"
+              },
+              "Segments": [
+                {
+                  "Id": "dev",
+                  "Configuration": {
+                    "Environment": "dev",
+                    "Id": "dev",
+                    "NAT": {
+                      "Enabled": true,
+                      "Hosted": true,
+                      "MultiAZ": false,
+                      "Id": "NAT",
+                      "Name": "NAT"
+                    },
+                    "Name": "development",
+                    "Network": {
+                      "CIDR": {
+                        "Address": "10.0.0.0",
+                        "Mask": 16,
+                        "Id": "CIDR",
+                        "Name": "CIDR"
+                      },
+                      "DNSHostnames": true,
+                      "DNSSupport": true,
+                      "InternetAccess": true,
+                      "Tiers": {
+                        "Order": [
+                          "web",
+                          "msg",
+                          "app",
+                          "db",
+                          "dir",
+                          "ana",
+                          "api",
+                          "spare",
+                          "elb",
+                          "ilb",
+                          "spare",
+                          "spare",
+                          "spare",
+                          "spare",
+                          "spare",
+                          "mgmt"
+                        ],
+                        "Id": "Tiers",
+                        "Name": "Tiers"
+                      },
+                      "Zones": {
+                        "Order": [
+                          "a",
+                          "b",
+                          "spare",
+                          "spare"
+                        ],
+                        "Id": "Zones",
+                        "Name": "Zones"
+                      },
+                      "Id": "Network",
+                      "Name": "Network"
+                    },
+                    "RotateKey": true,
+                    "S3": {
+                      "IncludeTenant": false,
+                      "Id": "S3",
+                      "Name": "S3"
+                    },
+                    "SSH": {
+                      "Active": false,
+                      "Enabled": true,
+                      "IPAddressGroups": [],
+                      "PerSegment": true,
+                      "Standalone": true,
+                      "Id": "SSH",
+                      "Name": "SSH"
+                    },
+                    "SSHPerSegment": true,
+                    "Tiers": {
+                      "Order": [
+                        "elb",
+                        "api",
+                        "web",
+                        "msg",
+                        "dir",
+                        "ilb",
+                        "app",
+                        "db",
+                        "ana",
+                        "mgmt",
+                        "docs"
+                      ],
+                      "Id": "Tiers",
+                      "Name": "Tiers"
+                    },
+                    "Title": "Development",
+                    "multiAZ": true
+                  },
+                  "Account": {
+                    "AWSId": "116215682628",
+                    "Audit": {
+                      "Backup": 90,
+                      "Expiration": 2555,
+                      "Id": "Audit",
+                      "Name": "Audit"
+                    },
+                    "CostCentre": "CotDev",
+                    "Id": "mswdev",
+                    "Region": "ap-southeast-2",
+                    "Seed": "kjhaw9023",
+                    "Title": "Development Account",
+                    "Name": "mswdev"
+                  },
+                  "Solution": {
+                    "Id": "walksregister",
+                    "Name": "walksregister"
+                  },
+                  "Tiers": [
+                    {
+                      "Id": "api",
+                      "Configuration": {
+                        "Description": "Supports externally exposed APIs",
+                        "Network": true,
+                        "NetworkACL": "open",
+                        "RouteTable": "internal",
+                        "Title": "API Tier",
+                        "Id": "api",
+                        "Name": "api"
+                      },
+                      "Components": [
+                        {
+                          "Id": "walks",
+                          "Type": "apigateway",
+                          "Occurrences": []
+                        }
+                      ]
+                    },
+                    {
+                      "Id": "web",
+                      "Configuration": {
+                        "Description": "Supports HMI",
+                        "Network": true,
+                        "NetworkACL": "open",
+                        "RouteTable": "internal",
+                        "Title": "Web Tier",
+                        "Id": "web",
+                        "Name": "web"
+                      },
+                      "Components": [
+                        {
+                          "Id": "docs",
+                          "Type": "spa",
+                          "Occurrences": []
+                        }
+                      ]
+                    },
+                    {
+                      "Id": "app",
+                      "Configuration": {
+                        "Description": "Supports application logic execution",
+                        "Network": true,
+                        "NetworkACL": "open",
+                        "RouteTable": "internal",
+                        "Title": "Applications Tier",
+                        "Id": "app",
+                        "Name": "application"
+                      },
+                      "Components": [
+                        {
+                          "Id": "stream-s3",
+                          "Type": "s3",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "stream-sqs",
+                          "Type": "sqs",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "walks-lambda",
+                          "Type": "lambda",
+                          "Occurrences": []
+                        }
+                      ]
+                    },
+                    {
+                      "Id": "db",
+                      "Configuration": {
+                        "Description": "Supports long term storage of content and customer data",
+                        "Network": true,
+                        "NetworkACL": "open",
+                        "RouteTable": "internal",
+                        "Title": "Database Tier",
+                        "Id": "db",
+                        "Name": "database"
+                      },
+                      "Components": [
+                        {
+                          "Id": "filestore",
+                          "Type": "efs",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "searchcluster",
+                          "Type": "es",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "walks",
+                          "Type": "rds",
+                          "Occurrences": []
+                        }
+                      ]
+                    },
+                    {
+                      "Id": "mgmt",
+                      "Configuration": {
+                        "Description": "Supports ssh based host access and internet access for internal hosts",
+                        "Network": true,
+                        "NetworkACL": "open",
+                        "RouteTable": "external",
+                        "Title": "Management Tier",
+                        "Id": "mgmt",
+                        "Name": "management"
+                      },
+                      "Components": [
+                        {
+                          "Id": "alm-ecs",
+                          "Type": "ecs",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "nat-nat",
+                          "Type": "nat",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "seg-cert",
+                          "Type": "cert",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "seg-cmk",
+                          "Type": "cmk",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "seg-dashboard",
+                          "Type": "dashboard",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "seg-dns",
+                          "Type": "dns",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "seg-s3",
+                          "Type": "s3",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "seg-vpc",
+                          "Type": "vpc",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "ssh-ssh",
+                          "Type": "ssh",
+                          "Occurrences": []
+                        }
+                      ]
+                    },
+                    {
+                      "Id": "docs",
+                      "Configuration": {
+                        "Description": "Non-network Tier For documentation generation",
+                        "Network": false,
+                        "NetworkACL": "open",
+                        "RouteTable": "internal",
+                        "Title": "Docs Tier",
+                        "Id": "docs",
+                        "Name": "documentation"
+                      },
+                      "Components": [
+                        {
+                          "Id": "docshub",
+                          "Type": "contenthub",
+                          "Occurrences": []
+                        },
+                        {
+                          "Id": "docsnode",
+                          "Type": "contentnode",
+                          "Occurrences": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

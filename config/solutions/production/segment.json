@@ -1,0 +1,9 @@
+{
+    "Segment" : {
+        "Title" : "Production",
+        "Environment" : "prod",
+        "Id" : "dev",
+        "Name" : "production",
+        "multiAZ" : true
+    }
+}

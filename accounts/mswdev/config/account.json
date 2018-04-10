@@ -1,0 +1,9 @@
+{
+    "Account" : {
+        "Title" : "Development Account",
+        "Id" : "mswdev",
+        "AWSId" : "116215682628",
+        "CostCentre" : "CotDev",
+        "Seed" : "kjhaw9023"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "Segment" : {
+        "Title" : "Development",
+        "Environment" : "dev",
+        "Id" : "dev",
+        "Name" : "development",
+        "multiAZ" : true
+    }
+}
